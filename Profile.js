@@ -1,30 +1,60 @@
-// Check if user is logged in
-const userData = JSON.parse(localStorage.getItem('currentUser'));
+// ------------------------------
+// Profile Page Script
+// ------------------------------
+
+// Get logged-in user from localStorage
+const userData = JSON.parse(localStorage.getItem("loggedInUser"));
 
 if (!userData) {
-    alert("Please login first!");
-    window.location.href = 'index.html'; // redirect to login page
+  alert("Please login first!");
+  window.location.href = "Singup.html"; // redirect to login/signup page
 }
 
-// Populate profile
-document.getElementById('user-name').innerText = userData.name;
-document.getElementById('user-class').innerText = userData.class;
-document.getElementById('user-school').innerText = userData.school;
-document.getElementById('user-role').innerText = userData.role;
-document.getElementById('user-points').innerText = userData.points || 0;
-document.getElementById('user-rank').innerText = userData.rank || '—';
+// ------------------------------
+// Populate profile details
+// ------------------------------
+document.getElementById("user-name").innerText = userData.name || "Guest";
+document.getElementById("user-class").innerText = userData.class || "—";
+document.getElementById("user-school").innerText = userData.school || "—";
+document.getElementById("user-role").innerText = userData.role || "Student";
+document.getElementById("user-points").innerText = userData.points || 0;
 
-// Populate achievements
-const achievementsUl = document.getElementById('user-achievements');
-const achievements = userData.achievements || ['No achievements yet'];
-achievements.forEach(item => {
-    const li = document.createElement('li');
-    li.innerText = item;
-    achievementsUl.appendChild(li);
+// ------------------------------
+// Rank Calculation (Leaderboard Logic)
+// ------------------------------
+let rank = "—"; // default rank
+if (userData.points >= 500) {
+  rank = "ACE";
+} else if (userData.points >= 400) {
+  rank = "Diamond";
+} else if (userData.points >= 300) {
+  rank = "Platinum";
+} else if (userData.points >= 200) {
+  rank = "Gold";
+} else if (userData.points > 100) {
+  rank = "Silver";
+} else if (userData.points > 0) {
+  rank = "Bronze";
+}
+document.getElementById("user-rank").innerText = rank;
+
+// ------------------------------
+// Populate Achievements (Badges)
+// ------------------------------
+const achievementsUl = document.getElementById("user-achievements");
+achievementsUl.innerHTML = ""; // clear first
+
+const badges = userData.badges && userData.badges.length > 0 ? userData.badges : ["No achievements yet"];
+badges.forEach((badge) => {
+  const li = document.createElement("li");
+  li.innerText = badge;
+  achievementsUl.appendChild(li);
 });
 
-// Logout button
-document.getElementById('logout-btn').addEventListener('click', () => {
-    localStorage.removeItem('currentUser');
-    window.location.href = 'index.html';
+// ------------------------------
+// Logout Functionality
+// ------------------------------
+document.getElementById("logout-btn").addEventListener("click", () => {
+  localStorage.removeItem("loggedInUser");
+  window.location.href = "Singup.html";
 });
